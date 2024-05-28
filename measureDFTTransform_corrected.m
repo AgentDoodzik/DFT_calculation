@@ -74,10 +74,17 @@ iter = 0;
 plot_iterator = 1;
 
 % two-row table - first row: A (complex num. magnitude), second: angle 
-MagnitudePhaseInput = cell(length(sineFrequencies),2); %data from input signal 
-MagnitudePhaseOutput = cell(length(sineFrequencies),2); %from output signal
-Gs = cell(length(sineFrequencies),1); % gain
-fis = cell(length(sineFrequencies),1); % phase
+MagnitudePhaseInput = zeros(2,length(sineFrequencies)); %data from input signal 
+MagnitudePhaseOutput = zeros(2,length(sineFrequencies)); %from output signal
+Gs = zeros(1, length(sineFrequencies)); % gain
+fis = zeros(1, length(sineFrequencies)); % phase
+
+
+ReWe=zeros(1,length(sineFrequencies)); %real part of input signal
+ImWe=zeros(1,length(sineFrequencies)); %Imaginary part of output signal
+
+ReWy=zeros(1,length(sineFrequencies));
+ImWy=zeros(1,length(sineFrequencies));
 
 for iter=1:length(matrixOfResults);
 
@@ -94,25 +101,20 @@ t=(0:Nt-1)/fp; %time vector needed for DFT
 Nf = round(Nt/2+1); %sample corresponding to Nyquist frequency
 
 
-ReWe=zeros(1,length(sineFrequencies)); %real part of input signal
-ImWe=zeros(1,length(sineFrequencies)); %Imaginary part of output signal
-
-ReWy=zeros(1,length(sineFrequencies));
-ImWy=zeros(1,length(sineFrequencies));
 
 
 
-for fi=1:length(sineFrequencies)
+% for fi=1:length(sineFrequencies)
 
-    freq=sineFrequencies(fi); %calculating DFT for a specific test freq.
+    freq=sineFrequencies(iter); %calculating DFT for a specific test freq.
 
-    ReWe(fi) = 2/Nt * korL(matrixOfResults{iter}(1,:), cos(2*pi*freq*t)); % real part DFT 
-    ImWe(fi) = 2/Nt * korL(matrixOfResults{iter}(1,:), sin(2*pi*freq*t)); %imaginary part DFT
+    ReWe(iter) = 2/Nt * korL(matrixOfResults{iter}(1,:), cos(2*pi*freq*t)); % real part DFT 
+    ImWe(iter) = 2/Nt * korL(matrixOfResults{iter}(1,:), sin(2*pi*freq*t)); %imaginary part DFT
 
-    ReWy(fi) = 2/Nt * korL(matrixOfResults{iter}(2,:), cos(2*pi*freq*t));
-    ImWy(fi) = 2/Nt * korL(matrixOfResults{iter}(2,:), sin(2*pi*freq*t));
+    ReWy(iter) = 2/Nt * korL(matrixOfResults{iter}(2,:), cos(2*pi*freq*t));
+    ImWy(iter) = 2/Nt * korL(matrixOfResults{iter}(2,:), sin(2*pi*freq*t));
     
-end
+% end
 
 
 
@@ -129,14 +131,13 @@ end
 % ImWy(1) = ImWy(1)/2;
 % ImWy(Nf) = ImWy(Nf)/2;
 
-MagnitudePhaseInput{iter,1}=sqrt(ReWe.^2 + ImWe.^2);
-MagnitudePhaseInput{iter,2}= atan2(ImWe,ReWe);
+MagnitudePhaseInput(1,iter)=sqrt(ReWe(iter)^2 + ImWe(iter)^2);
+MagnitudePhaseInput(2, iter)= atan2(ImWe(iter),ReWe(iter));
 
-MagnitudePhaseOutput{iter,1}=sqrt(ReWy.^2 + ImWy.^2);
-MagnitudePhaseOutput{iter,2}= atan2(ImWy,ReWy);
+MagnitudePhaseOutput(1,iter)=sqrt(ReWy(iter)^2 + ImWy(iter)^2);
+MagnitudePhaseOutput(2,iter)= atan2(ImWy(iter),ReWy(iter));
 
-Gs{iter,1} = MagnitudePhaseOutput{iter,1} ./ MagnitudePhaseInput{iter, 1};
-fis{iter,1} = MagnitudePhaseOutput{iter,2} - MagnitudePhaseInput{iter,2}; 
+
 
 % figure(plot_iterator);
 % t=tiledlayout(2,1);
@@ -191,23 +192,30 @@ fis{iter,1} = MagnitudePhaseOutput{iter,2} - MagnitudePhaseInput{iter,2};
 
 end 
 
-%Plotting section (uncomment for actual plotting)
-for iter = 1:length(matrixOfResults);
+Gs = MagnitudePhaseOutput(1,:) ./ MagnitudePhaseInput(1,:);
+fis = MagnitudePhaseOutput(2,:) - MagnitudePhaseInput(2,:); 
+
+
+
     figure;
     t = tiledlayout(2,1);
     
     nexttile
-    %plot(sineFrequencies, Gs{iter, 1},'b-');
-    stem(sineFrequencies,Gs{iter,1});
-    xlim([0 5]);
+    %plot(sineFrequencies,Gs,'b-');
+    stem(sineFrequencies,Gs);
+    xlim([0 4.5]);
     title("Ch-ka Bode'ego G(f)");
+    xlabel('Hz')
+    ylabel('G')
     
     nexttile
-    %plot(sineFrequencies, fis{iter, 1},'-b');
-    stem(sineFrequencies,Gs{iter,1});
-    xlim([0 5]);
+    %plot(sineFrequencies,rad2deg(fis));
+    stem(sineFrequencies,rad2deg(fis));
+    xlim([0 4.5]);
     title("Ch-ka Bode'ego dfi(f)");
-    title(t, AmplitudeSineFreqInfo{iter});
-end
+    xlabel('Hz')
+    ylabel('delta fi')
+    %title(t, AmplitudeSineFreqInfo);
+
 
 
