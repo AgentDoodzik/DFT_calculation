@@ -131,8 +131,8 @@ Nf = round(Nt/2+1); %sample corresponding to Nyquist frequency
 % ImWy(1) = ImWy(1)/2;
 % ImWy(Nf) = ImWy(Nf)/2;
 
-MagnitudePhaseInput(1,iter)=sqrt(ReWe(iter)^2 + ImWe(iter)^2);
-MagnitudePhaseInput(2, iter)= atan2(ImWe(iter),ReWe(iter));
+MagnitudePhaseInput(1,iter)=sqrt(ReWe(iter)^2 + ImWe(iter)^2); %calculate input sig. Magnitude
+MagnitudePhaseInput(2, iter)= atan2(ImWe(iter),ReWe(iter)); %ditto - phase
 
 MagnitudePhaseOutput(1,iter)=sqrt(ReWy(iter)^2 + ImWy(iter)^2);
 MagnitudePhaseOutput(2,iter)= atan2(ImWy(iter),ReWy(iter));
