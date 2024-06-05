@@ -160,6 +160,9 @@ Gs = MagnitudePhaseOutput(1:2:5,:) ./ MagnitudePhaseInput(1:2:5,:);
 fis = MagnitudePhaseOutput(2:2:6,:) - MagnitudePhaseInput(2:2:6,:); 
 
 
+fis = mod(fis + pi, pi);
+fis = fis - pi;
+
 for plotIter=1:size(Gs,1)
     
     figure(plotIter);
