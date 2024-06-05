@@ -88,7 +88,7 @@ ImWy=zeros(1,length(sineFrequencies));
 
 for iter=1:length(matrixOfResults);
 
-
+matrixOfResults{iter}(2,:)=matrixOfResults{iter}(2,:).*1.41;
 Nt = size(matrixOfResults{iter}, 2); %number of samples
 
 fp= 81.4;% <- sampling frequency
@@ -132,62 +132,10 @@ Nf = round(Nt/2+1); %sample corresponding to Nyquist frequency
 % ImWy(Nf) = ImWy(Nf)/2;
 
 MagnitudePhaseInput(1,iter)=sqrt(ReWe(iter)^2 + ImWe(iter)^2); %calculate input sig. Magnitude
-MagnitudePhaseInput(2, iter)= atan2(ImWe(iter),ReWe(iter)); %ditto - phase
+MagnitudePhaseInput(2, iter)= rad2deg(atan2(ImWe(iter),ReWe(iter))); %ditto - phase 360 deg / 256 = 1.41
 
 MagnitudePhaseOutput(1,iter)=sqrt(ReWy(iter)^2 + ImWy(iter)^2);
-MagnitudePhaseOutput(2,iter)= atan2(ImWy(iter),ReWy(iter));
-
-
-
-% figure(plot_iterator);
-% t=tiledlayout(2,1);
-% 
-% nexttile
-% plot(f, MagnitudePhaseInput{iter,1},'r-');
-% xlim([0 5]);
-% title("Ch-ka Bode'ego syg. we A(f)");
-% 
-% 
-% nexttile
-% plot(f, rad2deg(MagnitudePhaseInput{iter,2}),'b-');
-% xlim([0 5]);
-% title("Ch-ka Bode'ego syg. we fi(f)");
-% title(t,AmplitudeSineFreqInfo{iter});
-% plot_iterator = plot_iterator+1;
-% 
-% figure(plot_iterator);
-% t=tiledlayout(2,1);
-% 
-% nexttile
-% plot(f, MagnitudePhaseOutput{iter,1},'r-');
-% xlim([0 5]);
-% title("Ch-ka Bode'ego syg. wy A(f)");
-% 
-% nexttile
-% plot(f, rad2deg(MagnitudePhaseOutput{iter,2}),'b-');
-% xlim([0 5]);
-% title("Ch-ka Bode'ego syg. wy fi(f)");
-% title(t,AmplitudeSineFreqInfo{iter})
-% 
-% plot_iterator = plot_iterator+1;
-% figure(plot_iterator);
-% 
-% t=tiledlayout(2,1);
-% nexttile
-% plot(f, Gs{iter,1},'b-');
-% xlim([0 5]);
-% title("Ch-ka Bode'ego G(f)")
-% 
-% nexttile
-% plot(f,fis{iter,1},'-b');
-% xlim([0 5]);
-% title("Ch-ka Bode'ego dfi(f)")
-% title(t,AmplitudeSineFreqInfo{iter})
-% 
-% plot_iterator = plot_iterator+1;
-
-
-
+MagnitudePhaseOutput(2,iter)= rad2deg(atan2(ImWy(iter),ReWy(iter)));
 
 
 end 
@@ -209,8 +157,8 @@ fis = MagnitudePhaseOutput(2,:) - MagnitudePhaseInput(2,:);
     ylabel('G')
     
     nexttile
-    %plot(sineFrequencies,rad2deg(fis));
-    stem(sineFrequencies,rad2deg(fis));
+    %plot(sineFrequencies,fis);
+    stem(sineFrequencies,fis);
     xlim([0 4.5]);
     title("Ch-ka Bode'ego dfi(f)");
     xlabel('Hz')
