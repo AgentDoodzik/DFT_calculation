@@ -88,19 +88,24 @@ ImWy=zeros(1,length(sineFrequencies));
 
 for iter=1:length(matrixOfResults);
 
-matrixOfResults{iter}(2,:)=matrixOfResults{iter}(2,:).*1.41;
+% matrixOfResults{iter}(2,:)=matrixOfResults{iter}(2,:)%.*1.41;
 Nt = size(matrixOfResults{iter}, 2); %number of samples
 
 fp= 81.4;% <- sampling frequency
 fn=fp/2; %Nyquist frequency
 
+fc = 5; %cutoff frequency for the filter
+
+%time = (matrixOfResults{iter}(1,:) - 1 )/fp; 
 
 
 t=(0:Nt-1)/fp; %time vector needed for DFT
 
 Nf = round(Nt/2+1); %sample corresponding to Nyquist frequency
 
+[b, a] = butter(4, fc / (fp / 2), 'low');
 
+output_filtered=filtfilt(b,a,matrixOfResults{iter}(2,:));
 
 
 
