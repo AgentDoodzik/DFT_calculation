@@ -106,6 +106,7 @@ Nf = round(Nt/2+1); %sample corresponding to Nyquist frequency
 [b, a] = butter(4, fc / (fp / 2), 'low');
 
 output_filtered=filtfilt(b,a,matrixOfResults{iter}(2,:));
+matrixOfResults{iter}(2,:) = output_filtered;
 
 
 
