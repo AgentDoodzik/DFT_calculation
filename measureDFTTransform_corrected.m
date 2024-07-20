@@ -108,6 +108,8 @@ Nf = round(Nt/2+1); %sample corresponding to Nyquist frequency
 output_filtered=filtfilt(b,a,matrixOfResults{iter}(2,:));
 matrixOfResults{iter}(2,:) = output_filtered;
 
+matrixOfResults{iter}(2,:) = matrixOfResults{iter}(2,:) - ((matrixOfResults{iter}(2,:) > 50)*50);
+
 
 
 % for fi=1:length(sineFrequencies)
