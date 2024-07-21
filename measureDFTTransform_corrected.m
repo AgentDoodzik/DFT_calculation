@@ -101,8 +101,11 @@ ImWy=zeros(3,length(sineFrequencies));
 
 for iter=1:length(matrixOfResults);
 
-
+matrixOfResults{iter}(2,:) =  (matrixOfResults{iter}(2,:) + ((matrixOfResults{iter}(2,:) > 50)*(-256)));
 Nt = size(matrixOfResults{iter}, 2); %number of samples
+%sampleNumberVector=1:Nt;
+coeff = ones(1, Nt)/(Nt);
+matrixOfResults{iter}(2,:) = filter(coeff,2 , matrixOfResults{iter}(2,:)); 
 
 fp= 81.4;% <- sampling frequency
 fn=fp/2; %Nyquist frequency
