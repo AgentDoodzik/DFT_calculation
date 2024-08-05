@@ -86,33 +86,31 @@ ImWe=zeros(1,length(sineFrequencies)); %Imaginary part of output signal
 ReWy=zeros(1,length(sineFrequencies));
 ImWy=zeros(1,length(sineFrequencies));
 
+filterDiv = 15; %Moving average filter divider
+
 for iter=1:length(matrixOfResults);
+
+
+
 
 % matrixOfResults{iter}(2,:)=matrixOfResults{iter}(2,:)%.*1.41;
 Nt = size(matrixOfResults{iter}, 2); %number of samples
 
 fp= 81.4;% <- sampling frequency
-fn=fp/2; %Nyquist frequency
-
-fc = 5; %cutoff frequency for the filter
-
-%time = (matrixOfResults{iter}(1,:) - 1 )/fp; 
+fn=fp/2; %Nyquist frequency 
 
 
 t=(0:Nt-1)/fp; %time vector needed for DFT
 
 Nf = round(Nt/2+1); %sample corresponding to Nyquist frequency
+%matrixOfResults{iter}(2,:) = output_filtered;
 
-[b, a] = butter(4, fc / (fp / 2), 'low');
+matrixOfResults{iter}(2,:) = matrixOfResults{iter}(2,:) - ((matrixOfResults{iter}(2,:) > 50)*-256);
 
-output_filtered=filtfilt(b,a,matrixOfResults{iter}(2,:));
-matrixOfResults{iter}(2,:) = output_filtered;
+filterCoeff = ones(1, round(Nt/filterDiv))/round(Nt/filterDiv);
 
-matrixOfResults{iter}(2,:) = matrixOfResults{iter}(2,:) - ((matrixOfResults{iter}(2,:) > 50)*50);
+matrixOfResults{iter}(2,:) = filter(filterCoeff,1, matrixOfResults{iter}(2,:));
 
-
-
-% for fi=1:length(sineFrequencies)
 
     freq=sineFrequencies(iter); %calculating DFT for a specific test freq.
 
@@ -122,7 +120,7 @@ matrixOfResults{iter}(2,:) = matrixOfResults{iter}(2,:) - ((matrixOfResults{iter
     ReWy(iter) = 2/Nt * korL(matrixOfResults{iter}(2,:), cos(2*pi*freq*t));
     ImWy(iter) = 2/Nt * korL(matrixOfResults{iter}(2,:), sin(2*pi*freq*t));
     
-% end
+
 
 
 
@@ -157,16 +155,16 @@ fis = MagnitudePhaseOutput(2,:) - MagnitudePhaseInput(2,:);
     t = tiledlayout(2,1);
     
     nexttile
-    %plot(sineFrequencies,Gs,'b-');
-    stem(sineFrequencies,Gs);
+    plot(sineFrequencies,Gs,'b-');
+    %stem(sineFrequencies,Gs);
     xlim([0 4.5]);
     title("Ch-ka Bode'ego G(f)");
     xlabel('Hz')
     ylabel('G')
     
     nexttile
-    %plot(sineFrequencies,fis);
-    stem(sineFrequencies,fis);
+    plot(sineFrequencies,fis);
+    %stem(sineFrequencies,fis);
     xlim([0 4.5]);
     title("Ch-ka Bode'ego dfi(f)");
     xlabel('Hz')
