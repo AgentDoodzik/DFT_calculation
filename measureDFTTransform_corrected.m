@@ -99,16 +99,18 @@ ImWe=zeros(3,length(sineFrequencies)); %Imaginary part of output signal
 ReWy=zeros(3,length(sineFrequencies));
 ImWy=zeros(3,length(sineFrequencies));
 
+fp= 81.4;% <- sampling frequency
+fn=fp/2; %Nyquist frequency
+
+filterDiv = 16;
+
 for iter=1:length(matrixOfResults);
 
 matrixOfResults{iter}(2,:) =  (matrixOfResults{iter}(2,:) + ((matrixOfResults{iter}(2,:) > 50)*(-256)));
 Nt = size(matrixOfResults{iter}, 2); %number of samples
 %sampleNumberVector=1:Nt;
-coeff = ones(1, Nt)/(Nt);
-matrixOfResults{iter}(2,:) = filter(coeff,2 , matrixOfResults{iter}(2,:)); 
-
-fp= 81.4;% <- sampling frequency
-fn=fp/2; %Nyquist frequency
+coeff = ones(1, round(Nt/filterDiv))/round(Nt/filterDiv);
+matrixOfResults{iter}(2,:) = filter(coeff,1 , matrixOfResults{iter}(2,:)); 
 
 
 
@@ -182,8 +184,8 @@ for plotIter=1:size(Gs,1)
     ylabel('G')
     
     nexttile
-    plot(sineFrequencies,rad2deg(fis(plotIter,:)));
-    %stem(sineFrequencies,rad2deg(fis(plotIter,:)));
+    %plot(sineFrequencies,rad2deg(fis(plotIter,:)));
+    stem(sineFrequencies,rad2deg(fis(plotIter,:)));
     xlim([0 4.25]);
     title("Ch-ka Bode'ego dfi(f)");
     xlabel('Hz')
