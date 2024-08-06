@@ -86,7 +86,9 @@ ImWe=zeros(1,length(sineFrequencies)); %Imaginary part of output signal
 ReWy=zeros(1,length(sineFrequencies));
 ImWy=zeros(1,length(sineFrequencies));
 
-filterDiv = 15; %Moving average filter divider
+%NOTE: fiterDiv = 18 - all phase stems are negative 
+
+filterDiv = 20; %Moving average filter divider
 
 for iter=1:length(matrixOfResults);
 
@@ -155,16 +157,16 @@ fis = MagnitudePhaseOutput(2,:) - MagnitudePhaseInput(2,:);
     t = tiledlayout(2,1);
     
     nexttile
-    plot(sineFrequencies,Gs,'b-');
-    %stem(sineFrequencies,Gs);
+    %plot(sineFrequencies,Gs,'b-');
+    stem(sineFrequencies,Gs);
     xlim([0 4.5]);
     title("Ch-ka Bode'ego G(f)");
     xlabel('Hz')
     ylabel('G')
     
     nexttile
-    plot(sineFrequencies,fis);
-    %stem(sineFrequencies,fis);
+    %plot(sineFrequencies,fis);
+    stem(sineFrequencies,fis);
     xlim([0 4.5]);
     title("Ch-ka Bode'ego dfi(f)");
     xlabel('Hz')
