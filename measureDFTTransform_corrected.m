@@ -99,6 +99,7 @@ ImWe=zeros(3,length(sineFrequencies)); %Imaginary part of output signal
 ReWy=zeros(3,length(sineFrequencies));
 ImWy=zeros(3,length(sineFrequencies));
 
+<<<<<<< Updated upstream
 fp= 81.4;% <- sampling frequency
 fn=fp/2; %Nyquist frequency
 
@@ -111,7 +112,27 @@ Nt = size(matrixOfResults{iter}, 2); %number of samples
 %sampleNumberVector=1:Nt;
 coeff = ones(1, round(Nt/filterDiv))/round(Nt/filterDiv);
 matrixOfResults{iter}(2,:) = filter(coeff,1 , matrixOfResults{iter}(2,:)); 
+=======
+filterDiv=20;
+fp= 81.4;% <- sampling frequency
+fn=fp/2; %Nyquist frequency
+>>>>>>> Stashed changes
 
+
+for iter=1:length(matrixOfResults);
+
+matrixOfResults{iter}(2,:) =  (matrixOfResults{iter}(2,:) + ((matrixOfResults{iter}(2,:) > 30)*(-256)));
+Nt = size(matrixOfResults{iter}, 2); %number of samples
+%filtering the output signal
+
+coeff = ones(1, round(Nt/filterDiv))/round(Nt/filterDiv);
+
+%compensation of filter delay
+fDelay = round((length(coeff)-1)/2);
+filteredOutput = filter(coeff,1 , matrixOfResults{iter}(2,:)); 
+
+%account the filter delay
+matrixOfResults{iter}(2,:) = [filteredOutput(fDelay+1:end) filteredOutput(1:fDelay)];
 
 
 t=(0:Nt-1)/fp; %time vector needed for DFT
